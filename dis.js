@@ -5,6 +5,9 @@
 //compare answer array with word array
 let word = []
 let answer = []
+let form0 = []
+let form1 = []
+
 // get random words
 
 async function getRandomWords(){
@@ -19,25 +22,37 @@ function displayWord(words, index){
     document.getElementById('words').appendChild(text)
 }
 // create input fields of answers and give ID based on index
-function playerAnswer(answers, index){
+function playerAnswer(array,index){
     text = document.createElement('input')
-    text.innerHTML = answers
     text.id = 'answer'+index
     text.placeholder = 'Answer'+ ' ' + index
     document.getElementById('answers').appendChild(text)
 }
+// compare answer input.value with displayeWord.
+// function compareAnswer(userInput,correctWord,index){
+//     if (userInput.value === displayedWord) {
+//             document.getElementById('answer'+index).style.backgroundColor = 'green'
+//         }
+    
+// }
 // function wrapper since await isnt a global layer thing yet :(
+// compare
+function compare(){
+    if (form1.value == form0.innerText) {
+        form1.style.backgroundColor = 'green'
+    } else {
+        form1.style.backgroundColor = 'red'
+    }
+}
 window.onload = async () =>{
 word = await getRandomWords()
-//console.log(word)
-// const words = document.createElement('p');
-// words.innerHTML = "this is it";
-// document.getElementById('words').appendChild(words);
 
 word.forEach(displayWord)
 word.forEach(playerAnswer)
+form0 = document.getElementById('words'+0)
+form1 = document.getElementById('answer'+0)
+console.log(form0.innerText)
+form1.addEventListener('focusout',async () => {
+    await compare()
+})
 }
-
-if (document.getElementsByTagName('input').innerHTML === document.getElementsByTagName('text').value
-){
-console.log('yay')}
