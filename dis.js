@@ -9,6 +9,7 @@ let answer = []
 let form0 = []
 let form1 = []
 let i = 0;
+let elements = []
 
 // get random words
 
@@ -16,21 +17,31 @@ async function getRandomWords(){
     return fetch('https://random-word-api.herokuapp.com/word?number=10&swear=0')
             .then(res => res.json())
 }
+
 // create div of word to type and give ID
+
 function displayWord(words, index){
-    text = document.createElement('p')
+    text = document.createElement('div')
     text.innerHTML = words
     text.id = 'words'+index
+    text.setAttribute('data-id', 'updatable')
+    text.classList.add('form-control')
     document.getElementById('words').appendChild(text)
 }
+
 // create input fields of answers and give ID based on index
+
 function playerAnswer(array,index){
     text = document.createElement('input')
     text.id = 'answer'+index
     text.placeholder = 'Answer'+ ' ' + index
+    text.classList.add('form-control')
     document.getElementById('answers').appendChild(text)
+    
 }
+
 // compare
+
 function compare(){
     if (form1.value == form0.innerText) {
         form1.style.backgroundColor = 'green'
@@ -42,23 +53,55 @@ function compare(){
         updateForm()
     }
 }
+
 // update i
-function iUpdate(){
-    if (i < word.length - 1) {i++} else {return i = 0} // prevents error throw on tabout of last input
-}
+
+//function iUpdate(){
+ // prevents error throw on focusout of last input
+//}
+
 //update forms 0 and 1
-async function updateForm(){
-    await iUpdate()
+
+function updateForm(){
+    if (i < word.length - 1) {
+        i++
+        form0 = document.getElementById('words'+i)
+        form1 = document.getElementById('answer'+i)
+        console.log(form0)
+        form1.addEventListener('focusout', compare)
+    } else if (i = word.length) {
+        i = 0
+        newRound();
+    }
     console.log(i)
+}
+
+// function wrapper since await isnt a global layer thing yet :(
+
+// new round function
+
+async function newRound(){
+    document.getElementById("answers0").focus();
+    elements = document.querySelectorAll(("[data-id='updatable']"))
+    console.log(elements)
+    elements.forEach((el)=>{el.remove()})
+    word = await getRandomWords()
+    word.forEach(displayWord)
     form0 = document.getElementById('words'+i)
     form1 = document.getElementById('answer'+i)
-    console.log(form0)
-    form1.addEventListener('focusout', async () => await compare())
+    
+    form1.addEventListener('focusout', compare)
+    // text.id = 'words'+index
+    // document.getElementById('words').appendChild(text)
 }
-// function wrapper since await isnt a global layer thing yet :(
+
 window.onload = async () =>{
     word = await getRandomWords()
-    
+    // let fakeWords = await getRandomWords()
+    // for (let i = 0; i < fakeWords.length; i++) {
+    //     allWords[`word${i}`] = fakeWords[i]
+    // }
+    //console.log(allWords)
     word.forEach(displayWord)
     word.forEach(playerAnswer)
     form0 = document.getElementById('words'+i)
@@ -66,6 +109,5 @@ window.onload = async () =>{
     console.log(form0.innerText)
     console.log(form1)
     console.log(i)
-    form1.addEventListener('focusout', async () => await compare())
+    form1.addEventListener('focusout', compare)
 }
-
