@@ -10,6 +10,8 @@ let form0 = []
 let form1 = []
 let i = 0;
 let elements = []
+let s = 0; //current SCORE
+let sBoard = document.getElementById('score')
 
 // get random words
 
@@ -20,18 +22,19 @@ async function getRandomWords(){
 
 // create div of word to type and give ID
 
-function displayWord(words, index){
+function createWords(words, index){
     text = document.createElement('div')
     text.innerHTML = words
     text.id = 'words'+index
     text.setAttribute('data-id', 'updatable')
     text.classList.add('form-control')
     document.getElementById('words').appendChild(text)
+    form0 = document.getElementById('words'+i)
 }
 
 // create input fields of answers and give ID based on index
 
-function playerAnswer(array,index){
+function createAnswerFields(array,index){
     text = document.createElement('input')
     text.id = 'answer'+index
     text.placeholder = 'Answer'+ ' ' + index
@@ -41,6 +44,7 @@ function playerAnswer(array,index){
     text.setAttribute('autocomplete', 'off')
     document.getElementById('answers').appendChild(text)
     document.getElementById('answer0').autofocus
+    form1 = document.getElementById('answer'+i)
     
 }
 
@@ -51,15 +55,18 @@ function compare(){
         form1.style.backgroundColor = 'green'
         form1.readOnly = true
         // score stuff
+        s++
+        score()
         updateForm()
     } else {
         form1.style.backgroundColor = 'red'
         form1.readOnly = true
         // score stuff
+        s = s - 1
+        score()
         updateForm()
     }
-}       
-
+}
 //update forms 0 and 1
 
 function updateForm(){
@@ -76,29 +83,38 @@ function updateForm(){
     //
 }
 
-// function wrapper since await isnt a global layer thing yet :(
-
 // new round function
+
 async function newRound(){
     
     elements = document.querySelectorAll(("[data-id='updatable']"))
     elements.forEach((el)=>{el.remove()})
     word = await getRandomWords()
-    word.forEach(displayWord)
-    word.forEach(playerAnswer)
+    word.forEach(createWords)
+    word.forEach(createAnswerFields)
     form0 = document.getElementById('words'+i)
-    form1 = document.getElementById('answer'+i)
+    
     let el = document.getElementById('answer0')
     el.focus()
     form1.addEventListener('focusout', compare)
 }
 
+// SCORE BOARD
+
+function score(){
+    if (s>=0){sBoard.innerHTML = ('Your score: '+s)}
+    else {
+        s=0
+        sBoard.innerHTML = ('ZERO POINTS :(')
+    }
+}
+
+// function wrapper since await isnt a global layer thing yet :(
 window.onload = async () =>{
     word = await getRandomWords()
-    word.forEach(displayWord)
-    word.forEach(playerAnswer)
-    form0 = document.getElementById('words'+i)
-    form1 = document.getElementById('answer'+i)
+    word.forEach(createWords)
+    word.forEach(createAnswerFields)
     document.getElementById('answer0').focus()
     form1.addEventListener('focusout', compare)
+    
 }
