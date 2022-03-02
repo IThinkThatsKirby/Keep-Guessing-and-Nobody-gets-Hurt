@@ -2,6 +2,9 @@
 Guess against words against time to stay alive.
 
 
+Everything below is a lie.
+
+
 Guess the word. You are given  blank spaces _ _ _ _ _ _ _ _ _.
 after a set amount of time more letters appear.
 if you don't guess the word before half the letters are shown you get to keep a body part(HANGMAN).(Don't make it look like hangman or get sue and canceled)
